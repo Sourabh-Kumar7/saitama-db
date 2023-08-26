@@ -3,6 +3,8 @@ import pickle
 from pathlib import Path
 from typing import Dict, Union
 
+import pandas as pd
+
 from saitamadb.common import params as db_params
 from saitamadb.errors.schema_error import SchemaError
 
@@ -76,3 +78,12 @@ def dump_cached_schema(db_path: str, schema: SchemaDictType) -> None:
 
     with open(c_schema_path, "wb") as f:
         pickle.dump(schema, f)
+
+
+def load_db(db_path: str, db_name: str) -> Union[pd.DataFrame, None]:
+    """loads the df from the pickle file"""
+    path = os.path.join(db_path, f"{db_name}.db")
+    if Path(path).is_file():
+        return pd.read_pickle(path)
+    else:
+        return None

@@ -5,7 +5,6 @@ import pandas as pd
 from saitamadb.common import utils as db_utils
 from saitamadb.errors.schema_error import SchemaError
 
-
 # types
 SchemaDictType = Dict[str, Dict[str, object]]
 
@@ -66,3 +65,16 @@ class SaitamaDb:
             else:
                 if not self._in_memory:
                     db_utils.dump_cached_schema(self._db_path, self._schema)
+
+    def _reload_db(self) -> None:
+        """Reload the pandas DF"""
+
+        if not self._in_memory:
+            data = db_utils.load_db(self._db_path, self._db_name)
+            if isinstance(data, pd.DataFrame):
+                self._db = data
+            else:
+                self._db = pd.DataFrame(columns=self._columns)
+        else:
+            self._db = pd.DataFrame(columns=self._columns)
+
